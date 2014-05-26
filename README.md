@@ -36,11 +36,10 @@ end
 
 post = Post.new
 post.body = 'content'
-post.save      # save into the file of `#filename`
-load = Post.find(post.id)
-puts load.body # load from the file of `#filename`
-# => 'content'
-load.destroy   # remove the file
+post.save      # save the content into the file of `#filename`
+loaded = Post.find(post.id)
+puts loaded.body # load the content from the file of `#filename`
+loaded.destroy   # remove the file
 ```
 
 ## Contributing
