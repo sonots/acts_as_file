@@ -1,27 +1,8 @@
 require_relative 'spec_helper'
-require 'acts_as_file'
-
-class Post
-  def initialize(params)
-    @name = params[:name]
-  end
-  attr_accessor :name
-  def save; end
-  def destroy; end
-  def self.delete_all; end
-end
-
-class TestPost < Post
-  include ActsAsFile
-  def filename
-    @filename ||= Tempfile.open(self.name) {|f| f.path }.tap {|name| File.unlink(name) }
-  end
-  acts_as_file :body => self.instance_method(:filename)
-end
+require_relative 'model'
 
 describe ActsAsFile do
   let(:subject) { TestPost.new(name: 'name') }
-  after { TestPost.delete_all }
   after { File.unlink(subject.filename) if File.exist?(subject.filename) }
 
   context '#body=' do

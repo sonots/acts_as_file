@@ -23,6 +23,7 @@ module ActsAsFile
             end
             save_without_file(*args)
           end
+          define_method(:save) {|*args| } unless method_defined?(:save)
           alias_method :save_without_file, :save
           alias_method :save, :save_with_file
 
@@ -65,6 +66,7 @@ module ActsAsFile
             end
             destroy_without_file
           end
+          define_method(:destroy) {} unless method_defined?(:destroy)
           alias_method :destroy_without_file, :destroy
           alias_method :destroy, :destroy_with_file
         end
