@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module ActsAsFile
   def self.included(klass)
     klass.extend(ClassMethods)
@@ -14,12 +16,16 @@ module ActsAsFile
               field_name = :"@#{field}"
               filename = filename_instance_method.bind(self).call
               content  = self.instance_variable_get(field_name)
-              File.open(filename, 'w') do |f|
-                f.flock(File::LOCK_EX) # inter-process locking
-                f.sync = true
-                f.write(content)
-                f.flush
-              end if filename and content
+              if filename and content
+                dirname = File.dirname(filename)
+                FileUtils.mkdir_p(dirname) unless Dir.exist?(dirname)
+                File.open(filename, 'w') do |f|
+                  f.flock(File::LOCK_EX) # inter-process locking
+                  f.sync = true
+                  f.write(content)
+                  f.flush
+                end
+              end
             end
             save_without_file(*args)
           end

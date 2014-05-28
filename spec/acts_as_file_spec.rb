@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 require_relative 'model'
 
 describe ActsAsFile do
-  let(:subject) { TestPost.new(name: 'name') }
+  let(:subject) { TestPost.new }
   after { File.unlink(subject.filename) if File.exist?(subject.filename) }
 
   context '#body=' do
