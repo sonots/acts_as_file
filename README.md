@@ -34,12 +34,15 @@ class Post < ActiveRecord::Base
   acts_as_file :body => self.instance_method(:filename)
 end
 
+# store
 post = Post.new
 post.body = 'content'
-post.save      # save the content into the file of `#filename`
-loaded = Post.find(post.id)
-puts loaded.body # load the content from the file of `#filename`
-loaded.destroy   # remove the file
+post.save # save the content into the file of `#filename`
+          # create the directory if not exist
+# load
+post = Post.first
+puts post.body # load the content from the file of `#filename`
+post.destroy   # remove the file
 ```
 
 ## Contributing
