@@ -23,13 +23,13 @@ describe ActsAsFile do
 
     context 'seek' do
       before { File.write(subject.filename, 'abcd') }
-      it { subject.body(1, 2).should == 'bc' }
+      it { expect(subject.body(1, 2)).to be == 'bc' }
     end
 
     context 'file does not exit' do
       before { File.unlink(subject.filename) if File.exist?(subject.filename) }
-      it { subject.body.should be_nil }
-      it { subject.body(1, 2).should be_nil }
+      it { expect(subject.body).to be_nil }
+      it { expect(subject.body(1, 2)).to be_nil }
     end
   end
   
@@ -43,7 +43,7 @@ describe ActsAsFile do
     context 'does not save if body does not exist' do
       before { subject.body = nil }
       before { subject.save }
-      it { expect(File.exist?(subject.filename)).to be_false }
+      it { expect(File.exist?(subject.filename)).to be_falsey }
     end
   end
 
@@ -51,12 +51,12 @@ describe ActsAsFile do
     context 'delete if file exists' do
       before { subject.save }
       before { subject.destroy }
-      it { expect(File.exist?(subject.filename)).to be_false }
+      it { expect(File.exist?(subject.filename)).to be_falsey }
     end
 
     context 'fine even if file does not exist' do
       before { subject.destroy }
-      it { expect(File.exist?(subject.filename)).to be_false }
+      it { expect(File.exist?(subject.filename)).to be_falsey }
     end
   end
 end
