@@ -59,5 +59,15 @@ describe ActsAsFile do
       it { expect(File.exist?(subject.filename)).to be_falsey }
     end
   end
+
+  context '#update_with_file' do
+    context 'rename' do
+      before { subject.body = 'aaaa' }
+      before { subject.save }
+      before { subject.instance_variable_set(:@filename, nil) }
+      before { subject.update(body: 'bbbb') }
+      it { subject }
+    end
+  end
 end
 

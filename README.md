@@ -29,16 +29,20 @@ ActiveRecord is not required, but let me write an example for it.
 class Post < ActiveRecord::Base
   include ActsAsFile
   def filename
-    "posts/#{self.id}_body.txt"
+    "posts/#{self.name}.txt"
   end
   acts_as_file :body => self.instance_method(:filename)
 end
 
 # store
-post = Post.new
+post = Post.new(name: 'foo')
 post.body = 'content'
 post.save # save the content into the file of `#filename`
           # create the directory if not exist
+
+# rename
+post.update(name: 'bar') # 'foo.txt' is renamed to 'bar.txt'
+
 # load
 post = Post.first
 puts post.body # load the content from the file of `#filename`

@@ -12,10 +12,15 @@ module ActsAsFile
       self.class_eval do
         unless method_defined?(:save_with_file)
           define_method(:save_with_file) do |*args|
+            prev_filenames = self.instance_variable_get(:@prev_filenames)
             params.each do |field, filename_instance_method|
               field_name = :"@#{field}"
               filename = filename_instance_method.bind(self).call
               content  = self.instance_variable_get(field_name)
+              prev_filename = prev_filenames[field] if prev_filenames
+              if filename and prev_filename and (prev_filename != filename)
+                File.rename(prev_filename, filename)
+              end
               if filename and content
                 dirname = File.dirname(filename)
                 FileUtils.mkdir_p(dirname) unless Dir.exist?(dirname)
@@ -32,6 +37,19 @@ module ActsAsFile
           define_method(:save) {|*args| } unless method_defined?(:save)
           alias_method :save_without_file, :save
           alias_method :save, :save_with_file
+
+          define_method(:update_attributes_with_file) do |*args|
+            binding.pry
+            prev_filenames = {}
+            params.each do |field, filename_instance_method|
+              prev_filenames[field] = filename_instance_method.bind(self).call
+            end
+            self.instance_variable_set(:@prev_filenames, prev_filenames)
+            update_attributes_without_file(*args)
+          end
+          define_method(:update_attributes) {|*args| } unless method_defined?(:update_attributes)
+          alias_method :update_attributes_without_file, :update_attributes
+          alias_method :update_attributes, :update_attributes_with_file
 
           params.each do |field, filename_instance_method|
             field_name = :"@#{field}"
